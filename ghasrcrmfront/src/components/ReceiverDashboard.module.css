@@ -1,0 +1,49 @@
+.wrapContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 10px;
+    direction: rtl;
+}
+.divMainContainer{
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+    border: 2px solid transparent; 
+    animation: shining 2s infinite;
+
+}
+@keyframes shining {
+    0% {
+      border-color: transparent;
+    }
+    50% {
+      border-color: #ff0f07; /* Shining color (adjust as needed) */
+    }
+    100% {
+      border-color: transparent;
+    }
+  }
+  
+@font-face {
+    font-family: 'yekan'; /* Choose a suitable name for your font */
+    src: url('./Yekan.ttf') format('truetype');
+    /* Add more font formats (e.g., woff, woff2) for cross-browser support */
+  }
+  *{
+    font-family: 'yekan';
+    font-size: 18px;
+  }
+  .CallerContainer{
+    border: 1px solid rgb(47, 0, 255);
+    padding: 5px;
+    border-radius: 10px;
+    margin: 2px;
+  }
