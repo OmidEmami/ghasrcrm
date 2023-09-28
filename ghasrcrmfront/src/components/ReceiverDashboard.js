@@ -20,10 +20,10 @@ const ReceiverDashboard =()=>{
     const [data,setData] = useState("")
     
     const [loading, setLoading] = useState(false)
-
+    const [guestName,setGuestName] = useState('');
     const [messageReceived, setMessageReceived] = useState([]);
     const [tartib, setTartib] = useState(0)
-    const [isModalOpen, setIsModalOpen] = useState({status : false , callid : ''})
+    const [isModalOpen, setIsModalOpen] = useState({status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''})
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
     
@@ -40,17 +40,22 @@ const ReceiverDashboard =()=>{
       
    
   
-    const regData = async(callId) =>{
+    const regData = async(e) =>{
+      
+      e.preventDefault();
       try{
         const response = await axios.post("http://localhost:3001/api/regData",{
-          callId : callId.status
+          callId : isModalOpen.callid,
+          guestName : guestName,
+
         })
       }catch{
 
       }
     }
-  const openModalRegData = async(callid)=>{
-    setIsModalOpen({status : true, callid : callid})
+  const openModalRegData = async(info)=>{
+    setIsModalOpen({status : true, callid : info.callId, phone :info.Phone, })
+    status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''
   }
     return(
         <div>
@@ -63,9 +68,10 @@ const ReceiverDashboard =()=>{
       >
         <div>
           <h1>asdadadad</h1>
-          <form onSubmit={(isModalOpen)=>regData(isModalOpen)}>
+          <form onSubmit={(e)=>regData(e)}>
            <label>نام مهمان</label>
-            <input placeholder="نام مهمان" />
+            <input placeholder="نام مهمان" value={guestName} onChange={(e)=>setGuestName(e.target.value)} />
+            <label>شماره تماس{}</label>
             <button type="submit">ثبت</button>
           </form>
         </div>
@@ -85,7 +91,7 @@ const ReceiverDashboard =()=>{
        <div className={styles.CallerContainer}>Call Id : {info.CallId}</div>
        <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
-            <button onClick={(info)=>openModalRegData(info.CallId)}>ثبت اطلاعات</button>
+            <button onClick={(info)=>openModalRegData(info)}>ثبت اطلاعات</button>
             <button>عدم پاسخ</button>
             </div>
        </div>
