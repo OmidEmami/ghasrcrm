@@ -4,7 +4,18 @@ import io from "socket.io-client";
 import styles from "./ReceiverDashboard.module.css";
 import { FcCallback } from "react-icons/fc";
 import { notify } from "./toast";
+import Modal from 'react-modal';
 const ReceiverDashboard =()=>{
+  const customStyles = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };    
     const socket = io.connect("http://localhost:3001");
     const [data,setData] = useState("")
     
@@ -12,7 +23,7 @@ const ReceiverDashboard =()=>{
 
     const [messageReceived, setMessageReceived] = useState([]);
     const [tartib, setTartib] = useState(0)
-  
+    const [isModalOpen, setIsModalOpen] = useState({status : false , callid : ''})
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
     
@@ -28,18 +39,38 @@ const ReceiverDashboard =()=>{
       }, []);
       
    
-    const sendPhoneNumber = async(e)=>{
-        e.preventDefault();
-        try{
-        await axios.get('http://localhost:3001/api/call/'+`${data}`)
-}catch(error){
-
-}
-    
-    }
   
+    const regData = async(callId) =>{
+      try{
+        const response = await axios.post("http://localhost:3001/api/regData",{
+          callId : callId.status
+        })
+      }catch{
+
+      }
+    }
+  const openModalRegData = async(callid)=>{
+    setIsModalOpen({status : true, callid : callid})
+  }
     return(
         <div>
+          <Modal
+        isOpen={isModalOpen.status}
+        //onAfterOpen={afterOpenModal}
+        onRequestClose={()=>setIsModalOpen({status : false , callid :''})}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <div>
+          <h1>asdadadad</h1>
+          <form onSubmit={(isModalOpen)=>regData(isModalOpen)}>
+           <label>نام مهمان</label>
+            <input placeholder="نام مهمان" />
+            <button type="submit">ثبت</button>
+          </form>
+        </div>
+        
+      </Modal>
             <h1>تماس های دریافتی</h1>
             <div className={styles.wrapContainer}>
       
@@ -54,7 +85,7 @@ const ReceiverDashboard =()=>{
        <div className={styles.CallerContainer}>Call Id : {info.CallId}</div>
        <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
-            <button>ثبت اطلاعات</button>
+            <button onClick={(info)=>openModalRegData(info.CallId)}>ثبت اطلاعات</button>
             <button>عدم پاسخ</button>
             </div>
        </div>

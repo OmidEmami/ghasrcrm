@@ -12,19 +12,21 @@ import path from "path";
 import fs from 'fs';
 import axios from "axios";
 
-
-
-
-
-
 dotenv.config();
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:3000','http://87.248.152.131','https://gmhotel.ir']
+  , // Replace with your frontend domain
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // If you're using cookies or sessions
+};
+
+app.use(cors(corsOptions));
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3001;
 const io = new Server(server, {
   cors: {
-    origin: "0.0.0.0",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
