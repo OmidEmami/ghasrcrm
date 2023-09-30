@@ -11,7 +11,7 @@ export const SendBack = async (params,res)=>{
             }
         })
         if(response.length > 0){
-            transmitData(response)
+            transmitData({serverRes: response, type : "haveBackGround"})
             await IncomingCalls.create({
                 Phone : params,
                 IsResponse : false,
@@ -20,7 +20,7 @@ export const SendBack = async (params,res)=>{
             })
         }else{
             const object = {Phone : params, CallId: callid, Time : moment().locale('fa').format('YYYY-MM-DD HH:mm:ss')}
-            transmitData(object)
+            transmitData({serverRes: object, type : "firstCall"})
             await IncomingCalls.create({
                 Phone : params,
                 IsResponse : false,

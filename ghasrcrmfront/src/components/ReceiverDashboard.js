@@ -21,15 +21,36 @@ const ReceiverDashboard =()=>{
     
     const [loading, setLoading] = useState(false)
     const [guestName,setGuestName] = useState('');
+    const [guestPhone, setGuestPhone] = useState('');
+    const [guestLastCall, setGuestLastCall] = useState('');
+    const [guestCallId, setGuestCallId] = useState('');
+    const [guestFirstCall, setGuestFirstCall] = useState('');
+    const [guestRequestType, setGuestRequestType] = useState('');
+    const [guestBackGround, setGuestBackGround] = useState('');
+    const [guestResult, setGuestResult] = useState('')
     const [messageReceived, setMessageReceived] = useState([]);
-    const [tartib, setTartib] = useState(0)
-    const [isModalOpen, setIsModalOpen] = useState({status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''})
+    
+    const [isModalOpen, setIsModalOpen] = useState({type : '', status : false ,
+     callid : '', phone :'' , lastcall:'', fullname:'',
+     firstcall:'',requesttype:'',background:'', result:''})
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
     
         socket.on("receive_message", (data) => {
           setMessageReceived(prevArray => [...prevArray, data]);
-          notify( "تماس جدید دریافت شد", "success")
+          notify( "تماس جدید دریافت شد", "success");
+          if (data.type === "haveBackGround"){
+            setIsModalOpen({type :"haveBackGround",
+            status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
+            lastcall: data.serverRes.LastCall, fullname : data.serverRes.FullName , 
+            firstcall : data.serverRes.FirstCall , requesttype: data.serverRes.RequestType,
+            background : data.serverRes.BackGround, result: data.serverRes.Result
+            })
+          }else{
+            setIsModalOpen({type :"firstCall",
+            status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
+            })
+          }
           
         });
     
@@ -55,23 +76,38 @@ const ReceiverDashboard =()=>{
     }
   const openModalRegData = async(info)=>{
     setIsModalOpen({status : true, callid : info.callId, phone :info.Phone, })
-    status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''
+    // status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''
   }
     return(
         <div>
           <Modal
         isOpen={isModalOpen.status}
         //onAfterOpen={afterOpenModal}
-        onRequestClose={()=>setIsModalOpen({status : false , callid :''})}
+        onRequestClose={()=>setIsModalOpen({type : "", status : false ,
+        callid : '', phone :'' , lastcall:'', fullname:'',
+        firstcall:'',requesttype:'',background:"", result:''})}
         style={customStyles}
         contentLabel="Example Modal"
       >
         <div>
           <h1>asdadadad</h1>
           <form onSubmit={(e)=>regData(e)}>
-           <label>نام مهمان</label>
-            <input placeholder="نام مهمان" value={guestName} onChange={(e)=>setGuestName(e.target.value)} />
-            <label>شماره تماس{}</label>
+            {isModalOpen.fullname !== '' &&  <>
+            <label>نام مهمان</label>
+            <input placeholder="نام مهمان" value={guestName} onChange={(e)=>setGuestName(e.target.value)} /></>}
+            {isModalOpen.phone !== '' && <>
+            <label>شماره تماس</label>
+            <input type="text" placeholder="شماره تماس" value={} />
+            </> }
+            {}
+            {}
+            {}
+            {}
+            {}
+            {}
+
+          
+            
             <button type="submit">ثبت</button>
           </form>
         </div>
@@ -83,13 +119,14 @@ const ReceiverDashboard =()=>{
       {messageReceived.length > 0 && messageReceived.map((info,index)=>(
         
        <div className={styles.divMainContainer}>
+        
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
             <FcCallback size={45} />
             <div>ترتیب : {index + 1}</div>
             </div>
-       <div className={styles.CallerContainer}>شماره تماس : {info.Phone}</div>
-       <div className={styles.CallerContainer}>Call Id : {info.CallId}</div>
-       <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
+       <div className={styles.CallerContainer}>شماره تماس : {info.serverRes.Phone}</div>
+       <div className={styles.CallerContainer}>Call Id : {info.serverRes.CallId}</div>
+       <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.serverRes.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
             <button onClick={(info)=>openModalRegData(info)}>ثبت اطلاعات</button>
             <button>عدم پاسخ</button>
