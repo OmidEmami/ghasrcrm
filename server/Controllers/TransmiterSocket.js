@@ -11,7 +11,8 @@ export const SendBack = async (params,res)=>{
             }
         })
         if(response.length > 0){
-            transmitData({serverRes: response, type : "haveBackGround"})
+            console.log(response[0].Phone)
+            transmitData({serverRes: response[0], type : "haveBackGround"})
             await IncomingCalls.create({
                 Phone : params,
                 IsResponse : false,

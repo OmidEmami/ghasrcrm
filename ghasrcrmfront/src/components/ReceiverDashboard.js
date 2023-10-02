@@ -5,6 +5,7 @@ import styles from "./ReceiverDashboard.module.css";
 import { FcCallback } from "react-icons/fc";
 import { notify } from "./toast";
 import Modal from 'react-modal';
+import moment from 'jalali-moment'
 const ReceiverDashboard =()=>{
   const customStyles = {
     content: {
@@ -18,7 +19,7 @@ const ReceiverDashboard =()=>{
   };    
     const socket = io.connect("http://localhost:3001");
     const [data,setData] = useState("")
-    
+    const m = moment();
     const [loading, setLoading] = useState(false)
     const [guestName,setGuestName] = useState('');
     const [guestPhone, setGuestPhone] = useState('');
@@ -33,6 +34,12 @@ const ReceiverDashboard =()=>{
     const [isModalOpen, setIsModalOpen] = useState({type : '', status : false ,
      callid : '', phone :'' , lastcall:'', fullname:'',
      firstcall:'',requesttype:'',background:'', result:''})
+     const optionsSelectBox = [
+      'رستوران',
+      'اقامت',
+      'حمام سنتی',
+      'سایر',
+    ];
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
     
@@ -60,6 +67,7 @@ const ReceiverDashboard =()=>{
             })
             setGuestPhone(data.serverRes.Phone)
             setGuestCallId(data.serverRes.CallId)
+            
           }
           
         });
@@ -72,14 +80,33 @@ const ReceiverDashboard =()=>{
    
   
     const regData = async(e) =>{
-      
+      var firstCallDate = '';
+      if(guestFirstCall === ''){
+        firstCallDate = m.locale('fa').format('YYYY-MM-DD')
+      }
       e.preventDefault();
       try{
         const response = await axios.post("http://localhost:3001/api/regData",{
           callId : isModalOpen.callid,
           guestName : guestName,
-
+          requestType : guestRequestType,
+          result : guestResult,
+          background : guestBackGround,
+          phone : guestPhone,
+          lastcalldate : m.locale('fa').format('YYYY-MM-DD'),
+          firstcalldate : firstCallDate,
         })
+        if(response.data === "ok"){
+          notify( "اطلاعات ثبت شد.", "success");
+          setIsModalOpen({type :"",
+            status : false, callid : '', phone :'',
+            lastcall: '', fullname : '' , 
+            firstcall : '' , requesttype: '',
+            background : '', result: ''
+            })
+        }else{
+          notify( "خطا", "error");
+        }
       }catch{
 
       }
@@ -101,6 +128,7 @@ const ReceiverDashboard =()=>{
       >
         <div>
           <h1>asdadadad</h1>
+          <p>call id : {guestCallId}</p>
           <form onSubmit={(e)=>regData(e)}>
             {isModalOpen.fullname !== '' &&  <>
             <label>نام مهمان</label>
@@ -109,14 +137,45 @@ const ReceiverDashboard =()=>{
             <label>شماره تماس</label>
             <input type="text" placeholder="شماره تماس" value={guestPhone} onChange={(e)=>setGuestPhone(e.target.value)} />
             </> }
-            {isModalOpen}
-            {}
-            {}
-            {}
-            {}
-            {}
-
-          
+            <label>نوع درخواست</label>
+            <select
+        id="selectBox"
+        value={guestRequestType}
+        onChange={(e)=>setGuestRequestType(e.target.value)}>
+          {guestRequestType === '' && <option value="">نوع درخواست را انتخاب کنید</option>}
+          {guestRequestType !== '' && <option value={guestRequestType}>{guestRequestType}</option>}
+        <option value="رستوران">رستوران</option>
+        <option value="اقامت">اقامت</option>
+        <option value="حمام سنتی">حمام سنتی</option>
+        <option value="سایر">سایر</option>
+      </select>
+            {guestLastCall !== '' &&
+            <div>
+            <label>تاریخ آخرین تماس</label>
+            {guestLastCall}
+            </div>
+            }
+            {guestFirstCall !== '' &&
+            <div>
+            <label>تاریخ اولین تماس</label>
+            {guestFirstCall}
+            </div>
+            }
+            
+            <div>
+              <label>سوابق قبلی</label>
+              <textarea value={guestBackGround}
+              onChange={(e)=>setGuestBackGround(e.target.value)}
+              rows={5} column={20} type="text"></textarea>
+            </div>
+            
+            
+            <div>
+              <lable>نتیجه</lable>
+              <textarea value={guestResult}
+              onChange={(e)=>setGuestResult(e.target.value)}
+              rows={5} column={20} type="text"></textarea>
+            </div>
             
             <button type="submit">ثبت</button>
           </form>
