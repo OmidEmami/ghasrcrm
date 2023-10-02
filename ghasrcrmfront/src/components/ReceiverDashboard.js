@@ -46,10 +46,20 @@ const ReceiverDashboard =()=>{
             firstcall : data.serverRes.FirstCall , requesttype: data.serverRes.RequestType,
             background : data.serverRes.BackGround, result: data.serverRes.Result
             })
+            setGuestName(data.serverRes.FullName)
+            setGuestPhone(data.serverRes.Phone)
+            setGuestLastCall(data.serverRes.LastCall)
+            setGuestCallId(data.serverRes.CallId)
+            setGuestFirstCall(data.serverRes.FirstCall)
+            setGuestRequestType(data.serverRes.RequestType)
+            setGuestBackGround(data.serverRes.BackGround)
+            setGuestResult(data.serverRes.Result)
           }else{
             setIsModalOpen({type :"firstCall",
             status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
             })
+            setGuestPhone(data.serverRes.Phone)
+            setGuestCallId(data.serverRes.CallId)
           }
           
         });
@@ -97,9 +107,9 @@ const ReceiverDashboard =()=>{
             <input placeholder="نام مهمان" value={guestName} onChange={(e)=>setGuestName(e.target.value)} /></>}
             {isModalOpen.phone !== '' && <>
             <label>شماره تماس</label>
-            <input type="text" placeholder="شماره تماس" value={} />
+            <input type="text" placeholder="شماره تماس" value={guestPhone} onChange={(e)=>setGuestPhone(e.target.value)} />
             </> }
-            {}
+            {isModalOpen}
             {}
             {}
             {}
