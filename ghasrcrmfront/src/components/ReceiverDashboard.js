@@ -34,41 +34,14 @@ const ReceiverDashboard =()=>{
     const [isModalOpen, setIsModalOpen] = useState({type : '', status : false ,
      callid : '', phone :'' , lastcall:'', fullname:'',
      firstcall:'',requesttype:'',background:'', result:''})
-     const optionsSelectBox = [
-      'رستوران',
-      'اقامت',
-      'حمام سنتی',
-      'سایر',
-    ];
+     
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
     
         socket.on("receive_message", (data) => {
           setMessageReceived(prevArray => [...prevArray, data]);
           notify( "تماس جدید دریافت شد", "success");
-          if (data.type === "haveBackGround"){
-            setIsModalOpen({type :"haveBackGround",
-            status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
-            lastcall: data.serverRes.LastCall, fullname : data.serverRes.FullName , 
-            firstcall : data.serverRes.FirstCall , requesttype: data.serverRes.RequestType,
-            background : data.serverRes.BackGround, result: data.serverRes.Result
-            })
-            setGuestName(data.serverRes.FullName)
-            setGuestPhone(data.serverRes.Phone)
-            setGuestLastCall(data.serverRes.LastCall)
-            setGuestCallId(data.serverRes.CallId)
-            setGuestFirstCall(data.serverRes.FirstCall)
-            setGuestRequestType(data.serverRes.RequestType)
-            setGuestBackGround(data.serverRes.BackGround)
-            setGuestResult(data.serverRes.Result)
-          }else{
-            setIsModalOpen({type :"firstCall",
-            status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
-            })
-            setGuestPhone(data.serverRes.Phone)
-            setGuestCallId(data.serverRes.CallId)
-            
-          }
+          
           
         });
     
@@ -98,12 +71,31 @@ const ReceiverDashboard =()=>{
         })
         if(response.data === "ok"){
           notify( "اطلاعات ثبت شد.", "success");
+          const targetValue = isModalOpen.callid
           setIsModalOpen({type :"",
             status : false, callid : '', phone :'',
             lastcall: '', fullname : '' , 
             firstcall : '' , requesttype: '',
             background : '', result: ''
             })
+            setGuestName('')
+            setGuestPhone('')
+            setGuestLastCall('')
+            setGuestCallId('')
+            setGuestFirstCall('')
+            setGuestRequestType('')
+            setGuestBackGround('')
+            setGuestResult('')
+            for(let i = 0 ; i < messageReceived.length ; i++){
+              if(messageReceived[i].serverRes.CallId === targetValue){
+                messageReceived.splice(i , 1)
+              }
+            }
+            // const indexToRemove = messageReceived.serverRes.findIndex(obj => obj.targetItem === targetValue);
+            // console.log(indexToRemove + "" + "12")
+            // if(indexToRemove !== -1){
+            //   messageReceived.splice(indexToRemove,1)
+            // }
         }else{
           notify( "خطا", "error");
         }
@@ -111,9 +103,48 @@ const ReceiverDashboard =()=>{
 
       }
     }
-  const openModalRegData = async(info)=>{
-    setIsModalOpen({status : true, callid : info.callId, phone :info.Phone, })
+  const openModalRegData = async(data,index)=>{
+    //setIsModalOpen({status : true, callid : info.callId, phone :info.Phone, })
+    console.log(messageReceived)
+    console.log(data)
+    if (data.type === "haveBackGround"){
+      
+      setIsModalOpen({type :"haveBackGround",
+      status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
+      lastcall: data.serverRes.LastCall, fullname : data.serverRes.FullName , 
+      firstcall : data.serverRes.FirstCall , requesttype: data.serverRes.RequestType,
+      background : data.serverRes.BackGround, result: data.serverRes.Result
+      })
+      setGuestName(data.serverRes.FullName)
+      setGuestPhone(data.serverRes.Phone)
+      setGuestLastCall(data.serverRes.LastCall)
+      setGuestCallId(data.serverRes.CallId)
+      setGuestFirstCall(data.serverRes.FirstCall)
+      setGuestRequestType(data.serverRes.RequestType)
+      setGuestBackGround(data.serverRes.BackGround)
+      setGuestResult(data.serverRes.Result)
+    }else{
+      setIsModalOpen({type :"firstCall",
+      status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
+      })
+      setGuestPhone(data.serverRes.Phone)
+      setGuestCallId(data.serverRes.CallId)
+      
+    }
     // status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''
+  }
+  const closeModalRegData =()=>{
+    setIsModalOpen({type : "", status : false ,
+        callid : '', phone :'' , lastcall:'', fullname:'',
+        firstcall:'',requesttype:'',background:"", result:''})
+        setGuestName('')
+        setGuestPhone('')
+        setGuestLastCall('')
+        setGuestCallId('')
+        setGuestFirstCall('')
+        setGuestRequestType('')
+        setGuestBackGround('')
+        setGuestResult('')
   }
     return(
         <div>
@@ -127,7 +158,7 @@ const ReceiverDashboard =()=>{
         contentLabel="Example Modal"
       >
         <div>
-          <h1>asdadadad</h1>
+          <h1>ثبت و ویرایش اطلاعات مشتری</h1>
           <p>call id : {guestCallId}</p>
           <form onSubmit={(e)=>regData(e)}>
             {isModalOpen.fullname !== '' &&  <>
@@ -179,6 +210,7 @@ const ReceiverDashboard =()=>{
             
             <button type="submit">ثبت</button>
           </form>
+          <button onClick={closeModalRegData}>بستن</button>
         </div>
         
       </Modal>
@@ -195,9 +227,9 @@ const ReceiverDashboard =()=>{
             </div>
        <div className={styles.CallerContainer}>شماره تماس : {info.serverRes.Phone}</div>
        <div className={styles.CallerContainer}>Call Id : {info.serverRes.CallId}</div>
-       <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.serverRes.Time}</div>
+       <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
-            <button onClick={(info)=>openModalRegData(info)}>ثبت اطلاعات</button>
+            <button onClick={()=>openModalRegData(info,index)}>ثبت اطلاعات</button>
             <button>عدم پاسخ</button>
             </div>
        </div>
@@ -207,4 +239,4 @@ const ReceiverDashboard =()=>{
     )
    
 }
-export default ReceiverDashboard
+export default ReceiverDashboard;
