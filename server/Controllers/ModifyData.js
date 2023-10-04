@@ -4,7 +4,7 @@ export const regData = async(req,res)=>{
    
     try{
         const setInComingCalls = await IncomingCalls.update({
-            IsResponse : "true",
+            IsResponse : 1,
         },{
             where:{
                 CallId : req.body.callId

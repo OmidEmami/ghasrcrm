@@ -37,7 +37,7 @@ const ReceiverDashboard =()=>{
      
     useEffect(() => {
         const socket = io.connect("http://localhost:3001");
-    
+
         socket.on("receive_message", (data) => {
           setMessageReceived(prevArray => [...prevArray, data]);
           notify( "تماس جدید دریافت شد", "success");
@@ -48,7 +48,7 @@ const ReceiverDashboard =()=>{
         return () => {
           socket.disconnect(); // Clean up the socket connection when the component unmounts
         };
-      }, [messageReceived]);
+      }, []);
       
    
   
@@ -91,11 +91,7 @@ const ReceiverDashboard =()=>{
                 messageReceived.splice(i , 1)
               }
             }
-            // const indexToRemove = messageReceived.serverRes.findIndex(obj => obj.targetItem === targetValue);
-            // console.log(indexToRemove + "" + "12")
-            // if(indexToRemove !== -1){
-            //   messageReceived.splice(indexToRemove,1)
-            // }
+            
         }else{
           notify( "خطا", "error");
         }
@@ -104,7 +100,7 @@ const ReceiverDashboard =()=>{
       }
     }
   const openModalRegData = async(data,index)=>{
-    //setIsModalOpen({status : true, callid : info.callId, phone :info.Phone, })
+    
     console.log(messageReceived)
     console.log(data)
     if (data.type === "haveBackGround"){
@@ -131,7 +127,7 @@ const ReceiverDashboard =()=>{
       setGuestCallId(data.serverRes.CallId)
       
     }
-    // status : false , callid : '', phone :'' , lastcall:'', fullname:'',firstcall:'',requesttype:'',background:"", result:''
+  
   }
   const closeModalRegData =()=>{
     setIsModalOpen({type : "", status : false ,
@@ -155,7 +151,7 @@ const ReceiverDashboard =()=>{
      var tempmessage = [...messageReceived]
         tempmessage.splice(i , 1)
         setMessageReceived(tempmessage)
-        console.log(messageReceived.length)
+        notify("تماس بسته شد", "error")
       }
     }
 
@@ -164,7 +160,7 @@ const ReceiverDashboard =()=>{
         <div>
           <Modal
         isOpen={isModalOpen.status}
-        //onAfterOpen={afterOpenModal}
+        
         onRequestClose={()=>setIsModalOpen({type : "", status : false ,
         callid : '', phone :'' , lastcall:'', fullname:'',
         firstcall:'',requesttype:'',background:"", result:''})}

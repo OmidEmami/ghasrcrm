@@ -15,7 +15,7 @@ export const SendBack = async (params,res)=>{
             transmitData({serverRes: response[0], type : "haveBackGround", Time : moment().locale('fa').format('YYYY-MM-DD HH:mm:ss')})
             await IncomingCalls.create({
                 Phone : params,
-                IsResponse : false,
+                IsResponse : 0,
                 Time : moment().locale('fa').format('YYYY-MM-DD HH:mm:ss'),
                 CallId : callid
             })
@@ -24,7 +24,7 @@ export const SendBack = async (params,res)=>{
             transmitData({serverRes: object, type : "firstCall", Time : moment().locale('fa').format('YYYY-MM-DD HH:mm:ss')})
             await IncomingCalls.create({
                 Phone : params,
-                IsResponse : false,
+                IsResponse : 0,
                 Time : moment().locale('fa').format('YYYY-MM-DD HH:mm:ss'),
                 CallId : callid
             })
