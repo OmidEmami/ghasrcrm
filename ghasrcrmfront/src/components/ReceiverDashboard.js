@@ -48,7 +48,7 @@ const ReceiverDashboard =()=>{
         return () => {
           socket.disconnect(); // Clean up the socket connection when the component unmounts
         };
-      }, []);
+      }, [messageReceived]);
       
    
   
@@ -146,6 +146,20 @@ const ReceiverDashboard =()=>{
         setGuestBackGround('')
         setGuestResult('')
   }
+  const closeRegData = (info,index) =>{
+    const targetValue = info.serverRes.CallId;
+    
+    for(let i = 0 ; i < messageReceived.length ; i++){
+     
+      if(messageReceived[i].serverRes.CallId === targetValue){
+     var tempmessage = [...messageReceived]
+        tempmessage.splice(i , 1)
+        setMessageReceived(tempmessage)
+        console.log(messageReceived.length)
+      }
+    }
+
+  }
     return(
         <div>
           <Modal
@@ -230,7 +244,7 @@ const ReceiverDashboard =()=>{
        <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
             <button onClick={()=>openModalRegData(info,index)}>ثبت اطلاعات</button>
-            <button>عدم پاسخ</button>
+            <button onClick={()=>closeRegData(info,index)}>عدم پاسخ</button>
             </div>
        </div>
       ))}
