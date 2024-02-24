@@ -44,7 +44,7 @@ const ReceiverDashboard =()=>{
           setMessageReceived(prevArray => [...prevArray, data]);
           notify( "تماس جدید دریافت شد", "success");
           
-          
+          console.log(data)
         });
     
         return () => {
@@ -103,9 +103,9 @@ const ReceiverDashboard =()=>{
     }
   const openModalRegData = async(data,index)=>{
     
-    
+  
     if (data.type === "haveBackGround"){
-      
+      console.log("havebackground")
       setIsModalOpen({type :"haveBackGround",
       status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
       lastcall: data.serverRes.LastCall, fullname : data.serverRes.FullName , 
@@ -121,6 +121,7 @@ const ReceiverDashboard =()=>{
       setGuestBackGround(data.serverRes.BackGround)
       setGuestResult(data.serverRes.Result)
     }else{
+      
       setIsModalOpen({type :"firstCall",
       status : true, callid : data.serverRes.CallId, phone :data.serverRes.Phone,
       })
@@ -217,6 +218,7 @@ const ReceiverDashboard =()=>{
             
             <div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
               <lable>نتیجه</lable>
+              
               <textarea value={guestResult}
               onChange={(e)=>setGuestResult(e.target.value)}
               rows={5} column={20} type="text"></textarea>
