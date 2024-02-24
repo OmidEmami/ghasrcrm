@@ -1,3 +1,11 @@
+*{
+  direction: rtl;
+}
+@font-face {
+  font-family: 'shabnam'; /* Choose a suitable name for your font */
+  src: url('../assests/fonts/shabnamMedium.ttf') format('truetype');
+  /* Add more font formats (e.g., woff, woff2) for cross-browser support */
+}
 .wrapContainer{
     display: flex;
     flex-direction: row;
@@ -47,3 +55,11 @@
     border-radius: 10px;
     margin: 2px;
   }
+  .regDataForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  

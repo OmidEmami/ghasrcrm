@@ -5,7 +5,8 @@ import styles from "./ReceiverDashboard.module.css";
 import { FcCallback } from "react-icons/fc";
 import { notify } from "./toast";
 import Modal from 'react-modal';
-import moment from 'jalali-moment'
+import moment from 'jalali-moment';
+import Button from '@mui/material/Button';
 const ReceiverDashboard =()=>{
   const customStyles = {
     content: {
@@ -15,8 +16,9 @@ const ReceiverDashboard =()=>{
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
+      width: '60%', // Adjust the width as needed
     },
-  };    
+  };
     const socket = io.connect("http://localhost:3001");
     const [data,setData] = useState("")
     const m = moment();
@@ -55,7 +57,7 @@ const ReceiverDashboard =()=>{
     const regData = async(e) =>{
       var firstCallDate = '';
       if(guestFirstCall === ''){
-        firstCallDate = m.locale('fa').format('YYYY-MM-DD')
+        firstCallDate = m.locale('fa').format('YYYY/MM/DD HH:mm:ss')
       }
       e.preventDefault();
       try{
@@ -66,7 +68,7 @@ const ReceiverDashboard =()=>{
           result : guestResult,
           background : guestBackGround,
           phone : guestPhone,
-          lastcalldate : m.locale('fa').format('YYYY-MM-DD'),
+          lastcalldate : m.locale('fa').format('YYYY/MM/DD HH:mm:ss'),
           firstcalldate : firstCallDate,
         })
         if(response.data === "ok"){
@@ -101,8 +103,7 @@ const ReceiverDashboard =()=>{
     }
   const openModalRegData = async(data,index)=>{
     
-    console.log(messageReceived)
-    console.log(data)
+    
     if (data.type === "haveBackGround"){
       
       setIsModalOpen({type :"haveBackGround",
@@ -167,11 +168,13 @@ const ReceiverDashboard =()=>{
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div>
+        <div style={{display:"flex", flexDirection:"column",justifyContent: "center",alignItems: "center"}}>
           <h1>ثبت و ویرایش اطلاعات مشتری</h1>
           <p>call id : {guestCallId}</p>
-          <form onSubmit={(e)=>regData(e)}>
+          <form className={styles.regDataForm} onSubmit={(e)=>regData(e)}>
+          <div style={{display:"flex", flexDirection:"row",justifyContent: "center",alignItems: "center"}}>
             {isModalOpen.fullname !== '' &&  <>
+            
             <label>نام مهمان</label>
             <input placeholder="نام مهمان" value={guestName} onChange={(e)=>setGuestName(e.target.value)} /></>}
             {isModalOpen.phone !== '' && <>
@@ -190,6 +193,7 @@ const ReceiverDashboard =()=>{
         <option value="حمام سنتی">حمام سنتی</option>
         <option value="سایر">سایر</option>
       </select>
+      </div>
             {guestLastCall !== '' &&
             <div>
             <label>تاریخ آخرین تماس</label>
@@ -202,8 +206,8 @@ const ReceiverDashboard =()=>{
             {guestFirstCall}
             </div>
             }
-            
-            <div>
+            <div style={{display:"flex",flexDirection:"row",justifyContent:"center",alignItems:"center",columnGap:"2vw"}}>
+            <div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
               <label>سوابق قبلی</label>
               <textarea value={guestBackGround}
               onChange={(e)=>setGuestBackGround(e.target.value)}
@@ -211,16 +215,21 @@ const ReceiverDashboard =()=>{
             </div>
             
             
-            <div>
+            <div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
               <lable>نتیجه</lable>
               <textarea value={guestResult}
               onChange={(e)=>setGuestResult(e.target.value)}
               rows={5} column={20} type="text"></textarea>
             </div>
+            </div>
             
-            <button type="submit">ثبت</button>
+            <div style={{margin:"1vw",display:"flex", flexDirection:"row",justifyContent: "center", alignItems: "center", columnGap:"1vw"}}>
+            <Button type="submit"  sx={{fontFamily:"shabnam"}} variant="outlined">ثبت</Button>
+            <Button  sx={{fontFamily:"shabnam"}} onClick={closeModalRegData} variant="outlined">بستن</Button>
+            </div>
           </form>
-          <button onClick={closeModalRegData}>بستن</button>
+          
+          
         </div>
         
       </Modal>
@@ -239,8 +248,11 @@ const ReceiverDashboard =()=>{
        <div className={styles.CallerContainer}>Call Id : {info.serverRes.CallId}</div>
        <div className={styles.CallerContainer}>تاریخ و زمان تماس : {info.Time}</div>
         <div style={{display:"flex",justifyContent: "space-between",alignItems: "center",margin:"10px"}}>
-            <button onClick={()=>openModalRegData(info,index)}>ثبت اطلاعات</button>
-            <button onClick={()=>closeRegData(info,index)}>عدم پاسخ</button>
+        <Button sx={{fontFamily:"shabnam"}} onClick={()=>openModalRegData(info,index)} variant="outlined">ثبت اطلاعات</Button>
+
+        <Button sx={{fontFamily:"shabnam"}} onClick={()=>closeRegData(info,index)} variant="outlined">عدم پاسخ</Button>
+
+            
             </div>
        </div>
       ))}
