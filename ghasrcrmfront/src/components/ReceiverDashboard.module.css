@@ -62,4 +62,27 @@
     align-items: center;
   }
   
+  .divider {
+    border-bottom: 1px solid #000; /* Adjust color and thickness as needed */
+    margin: 20px 0; /* Adjust spacing around the divider as needed */
+  }
+  .gridContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates a 2-column layout */
+    gap: 20px; /* Space between grid items */
+    margin:1vw
+  }
+  
+  .dataContainer {
+    /* Style for each dataset container */
+    background: #a39b9b; /* Example background, adjust as needed */
+    padding: 20px; /* Adds padding around the content */
+    border-radius: 5px; /* Optional: rounded corners for aesthetics */
+  }
+  
+  .divider {
+    height: 2px;
+    background-color: #ccc; /* Divider color, adjust as needed */
+    margin-top: 20px; /* Space above the divider */
+  }
   

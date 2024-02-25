@@ -28,8 +28,10 @@ const DetailedCalls = db.define('DetailedCalls',{
     },
     Result:{
         type: DataTypes.TEXT
+    },
+    customerSource:{
+        type: DataTypes.TEXT
     }
-    
     
 },{
     freezeTableName:true
